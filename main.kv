@@ -1,6 +1,6 @@
 #:import sm kivy.uix.screenmanager
 
-BoxLayout:
+FloatLayout:
     orientation: "vertical"
 
     # Screen Manager for switching between screens
@@ -10,7 +10,7 @@ BoxLayout:
         # Home Screen
         MDScreen:
             name: "home"
-            md_bg_color: 236/255, 236/255, 236/255, 1
+            md_bg_color: [.17, .17, .17, .17]
             FloatLayout:
                 orientation: "vertical"
                 ScrollView:
@@ -35,7 +35,7 @@ BoxLayout:
 
                 MDLabel:
                     text: "112"
-                    font_style: "H3"
+                    font_style: "H4"
                     halign: "left"
                     pos_hint:{"center_x":.55, "center_y":.95}
                 MDLabel:
@@ -44,21 +44,21 @@ BoxLayout:
                     theme_text_color: "Secondary"
                     pos_hint:{"center_x":.44, "center_y":.95}
                 MDLabel:
-                    text: "December"
+                    text: app.month_name
                     theme_text_color: "Secondary"
                     halign: "center"
-                    pos_hint: {"center_x":.5, "center_y":.55}
+                    pos_hint: {"center_x":.5, "center_y":.58}
 
 
                 MDSeparator:
                     height: "2dp"
-                    pos_hint:{"center_x":.5, "center_y":.48}
+                    pos_hint:{"center_x":.5, "center_y":.5}
 
                 BoxLayout:
                     orientation: "vertical"
                     padding: 30
                     spacing: 20
-                    pos_hint:{"center_x":.5, "center_y":.5}
+                    pos_hint:{"center_x":.5, "center_y":.6}
 
 
                     # Schools section
@@ -127,9 +127,7 @@ BoxLayout:
                             halign: "center"
                             pos_hint: {"center_x":.7, "center_y":.4}
 
-
-                    # Visitors section
-                    BoxLayout:
+                    FloatLayout:
                         orientation: "horizontal"
                         spacing: 10
                         size_hint_y: None
@@ -157,7 +155,7 @@ BoxLayout:
                             pos_hint: {"center_x":.65, "center_y":.4}
 
                         MDLabel:
-                            text: "65"
+                            text: "50"
                             font_style: "Subtitle1"
                             halign: "center"
                             pos_hint: {"center_x":.7, "center_y":.4}
@@ -170,37 +168,18 @@ BoxLayout:
         # Daily Attendance Screen
         MDScreen:
             name: "daily"
-            BoxLayout:
+            md_bg_color: [.17, .17, .17, .17]
+            FloatLayout:
                 orientation: "vertical"
-                MDTopAppBar:
-                    title: "Daily Attendance"
-                    #left_action_items: [["arrow-left", lambda x: screen_manager.current = "overview"]]
-                    md_bg_color: get_color_from_hex("#F5F5F5")
-                    specific_text_color: get_color_from_hex("#000000")
-                    elevation: 5
-                ScrollView:
-                    MDBoxLayout:
-                        orientation: "vertical"
-                        adaptive_height: True
-                        spacing: dp(10)
-                        padding: dp(10)
-                        # Content for daily screen
-
-                        MDBoxLayout:
-                            orientation: "horizontal"
-                            adaptive_height: True
-                            spacing: dp(10)
-
-                            #for day in range(17, 24):
-                            MDRaisedButton:
-                                text: "str(day)"
-                                md_bg_color: get_color_from_hex("#E3F2FD")
-                                theme_text_color: "Custom"
-                                text_color: get_color_from_hex("#000000")
-                                size_hint: None, None
-                                size: "40dp", "40dp"
-
-
+                MDRoundFlatButton:
+                    text: "Open Date Picker"
+                    pos_hint: {"center_x": .5, "center_y": .9}
+                    on_release: app.show_date_picker()
+                MDLabel:
+                    id: date_label
+                    theme_text_color: "Custom"
+                    halign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .82}
 
                 #InfoCard:
                 RecycleView:
@@ -218,10 +197,95 @@ BoxLayout:
                         height: self.minimum_height
                         orientation: 'vertical'
 
+
+        MDScreen:
+            name: "student"
+            md_bg_color: [.17, .17, .17, .17]
+            FloatLayout:
+                orientation: "vertical"
+                MDIconButton:
+                    halign:"center"
+                    icon:"chevron-left"
+                    icon_size: "30sp"
+                    pos_hint:{"center_x":.05, "center_y":.95}
+                    on_release:
+                        screen_manager.current = "daily"
+                MDLabel:
+                    text:"Students Attendance"
+                    font_style: "H6"
+                    halign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .95}
+
+                MDIconButton:
+                    halign:"center"
+                    icon:"magnify"
+                    font_size:"60sp"
+                    pos_hint:{"center_x":.93, "center_y":.95}
+                    on_release:
+                        screen_manager.current = "search"
+                #InfoCard:
+                RecycleView:
+                    id: prt
+                    key_viewclass: 'viewclass'
+                    key_size: 'height'
+                    pos_hint:{"top":.92}
+                    RecycleBoxLayout:
+                        id:wa
+                        spacing:dp(4)
+                        padding: dp(10)
+                        default_size: None, dp(50)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+
+
+        MDScreen:
+            name: "visitor"
+            md_bg_color: [.17, .17, .17, .17]
+            FloatLayout:
+                orientation: "vertical"
+                MDIconButton:
+                    halign:"center"
+                    icon:"chevron-left"
+                    icon_size: "30sp"
+                    pos_hint:{"center_x":.05, "center_y":.95}
+                    on_release:
+                        screen_manager.current = "daily"
+                MDLabel:
+                    text:"Visitors & school Attendance"
+                    font_style: "H6"
+                    halign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .95}
+
+                MDIconButton:
+                    halign:"center"
+                    icon:"magnify"
+                    font_size:"60sp"
+                    pos_hint:{"center_x":.93, "center_y":.95}
+                    on_release:
+                        screen_manager.current = "search"
+                #InfoCard:
+                RecycleView:
+                    id: vis
+                    key_viewclass: 'viewclass'
+                    key_size: 'height'
+                    pos_hint:{"top":.92}
+                    RecycleBoxLayout:
+                        id:wa
+                        spacing:dp(4)
+                        padding: dp(10)
+                        default_size: None, dp(50)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
+
+
         # Report Screen
         MDScreen:
             name: "report"
-            md_bg_color: [0.5, 0.5, 0.5, 1]
+            md_bg_color: [.17, .17, .17, .17]
             FloatLayout:
                 orientation: "vertical"
 
@@ -248,35 +312,34 @@ BoxLayout:
 
                     OneLineRightIconListItem:
                         text: "Weekly Report"
-                        on_release: print("Click!")
 
                         IconRightWidget:
                             icon: "chevron-right"
-                            on_release: print("Click!")
+                            icon_size: "30sp"
+                            on_release:
+                                screen_manager.current = "share"
 
                     OneLineRightIconListItem:
                         text: "Monthly Report"
-                        on_release: print("Click!")
 
                         IconRightWidget:
                             icon: "chevron-right"
+                            icon_size: "30sp"
                             on_release: print("Click!")
 
                     OneLineRightIconListItem:
                         text: "Year Report"
                         halign:"left"
-                        on_release: print("Click!")
 
                         IconRightWidget:
                             icon: "chevron-right"
+                            icon_size: "30sp"
                             on_release: print("Click!")
 
 
-                # Content for the report screen
-
         MDScreen:
             name: "!internet"
-            md_bg_color:0 / 225, 0 / 225, 0 / 225, 1
+            md_bg_color: [.17, .17, .17, .17]
 
             FloatLayout:
                 orientation: "vertical"
@@ -293,21 +356,163 @@ BoxLayout:
                     pos_hint:{"center_x":.5,"center_y":.5}
 
         MDScreen:
-            name: "chart"
-            MDBoxLayout:
+            name: "search"
+            md_bg_color: [.17, .17, .17, .17]
+            FloatLayout:
                 orientation: "vertical"
+                MDLabel:
+                    text: "In construction"
+                    font_style: "H6"
+                    halign:"center"
+                    pos_hint:{"center_x":.5, "center_y":.5}
 
-                MDBoxLayout:
-                    adaptive_height: True
+        MDScreen:
+            name: "parinfo"
+            md_bg_color: [.17, .17, .17, .17]
+            MDIconButton:
+                halign:"center"
+                icon:"chevron-left"
+                icon_size: "30sp"
+                pos_hint:{"center_x":.05, "center_y":.95}
+                on_release:
+                    screen_manager.current = "student"
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(35)
+                spacing: dp(15)
 
-                    MDRaisedButton:
-                        text: "update"
-                        on_release: root.update()
+
+                BoxLayout:
+                    orientation: 'vertical'
+
+                    MDLabel:
+                        text: "Parent Name:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "Emmanuel Silayo"
+                MDSeparator:
+
+                BoxLayout: # Contact Section
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Contact:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "+255 753 131 868"
+                MDSeparator:
+
+                BoxLayout: # Child's Name Section
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Child's Name:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "Serene Emmanuel\nIrene Emmanuel"
+                MDSeparator:
+
+                BoxLayout: # Child's Age Section
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Child's Age:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "9 Years Old\n5 Years Old"
+
+                Widget: # Spacer (optional)
+                    size_hint_y: 1
 
 
+        MDScreen:
+            name: "visinfo"
+            md_bg_color: [.17, .17, .17, .17]
+            MDIconButton:
+                halign:"center"
+                icon:"chevron-left"
+                icon_size: "30sp"
+                pos_hint:{"center_x":.05, "center_y":.95}
+                on_release:
+                    screen_manager.current = "visitor"
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(35)
+                spacing: dp(15)
 
 
-    # Bottom Navigation: This will stay the same for all screens
+                BoxLayout:  # School/Visitor Name
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "School / Visitor Name:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "Mama Hope"
+
+                MDSeparator:
+
+                BoxLayout:  # Head Visitor / Teacher Name
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Head of Visitor / Teacher Name:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "Mzava mwaikole"
+
+                MDSeparator:
+
+                BoxLayout:  # Contact
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Contact:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "+255 753 131 868"
+
+                MDSeparator:
+
+                BoxLayout:  # Number Visitor / Students
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Numbers of Visitors / Students:"
+                        font_style: "H6"
+                    MDLabel:
+                        text: "65"
+
+                MDSeparator:
+
+                BoxLayout:  # Date of Visit
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Date of Visit:"
+                        font_style: "H6"
+                    MDLabel:
+                        id: visit_date_label # Give it an id to update from Python
+                        text: "2024/12/23"
+
+                Widget:  # Spacer
+                    size_hint_y: 1
+
+        MDScreen:
+            name: "share"
+            md_bg_color: [.17, .17, .17, .17]
+            FloatLayout:
+                orientation:"vertical"
+                MDLabel:
+                    text:"Share report via whatsapp"
+                    font_style:"H6"
+                    halign:"center"
+                    pos_hint: {"center_x": .5, "center_y": .95}
+
+                MDLabel:
+                    id: filename_label
+                    halign:"center"
+                    pos_hint: {"center_x": .5, "center_y": .7}
+
+                MDIconButton:
+                    icon: "whatsapp"
+                    icon_size: "50sp"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    on_release: app.share_whatsapp()
+
+
     AKBottomNavigation2:
         bg_color: app.theme_cls.bg_darkest
 
@@ -329,8 +534,6 @@ BoxLayout:
             on_release: screen_manager.current = "report"
 
 
-
-
 <NavigationButton@Button_Item>
     icon_color: app.theme_cls.text_color
     text_color: app.theme_cls.text_color
@@ -341,33 +544,67 @@ BoxLayout:
 <MyAKBarChart@AKBarChart>
     size_hint_y: None
     height: dp(180)
-    x_values: [5, 8, 15]
-    y_values: [0, 0, 1]
+#    x_values: [5, 8, 15]
+#    y_values: [0, 0, 1]
+    x_values: [1, 2, 3]
+    y_values: [100, 8, 8]
     label_size: dp(12)
 
-<InfoCard>:
-    md_bg_color: [0.5, 0.5, 0.5, 1]
-    #radius: [10]  # Rounded corners
-    padding: '5dp'
-    size_hint_y: None
-    height: '70dp'  # Adjust height as needed
+<InfoCard@MDBoxLayout>:
+    md_bg_color: [.17, .17, .17, .3]
+    radius: [15]
     name: ""
-    sub: ""
-    orientation: 'vertical'
+    orientation: 'horizontal'
+    FloatLayout:
+        MDLabel:
+            halign:"left"
+            text:root.name
+            font_size: '16sp'
+            pos_hint:{"center_x":.55, "center_y":.5}
 
+        MDIconButton:
+            halign:"center"
+            icon:"chevron-right"
+            icon_size: "30sp"
+            pos_hint:{"center_x":.95, "center_y":.5}
+            on_release:
+                app.choice(root.name)
 
-    MDLabel:
-        text: root.name
-        font_size: '16sp'
-        theme_text_color: "Custom"
-        #text_color: 0.8, 0.8, 0.8, 1  # Light gray text
-        halign:"center"
-        pos_hint:{"center_x":.3}
+<StuCard@MDBoxLayout>:
+    md_bg_color: [.17, .17, .17, .3]
+    radius: [15]
+    name: ""
+    orientation: 'horizontal'
+    FloatLayout:
+        MDLabel:
+            halign:"left"
+            text:root.name
+            font_size: '16sp'
+            pos_hint:{"center_x":.55, "center_y":.5}
+        MDIconButton:
+            halign:"center"
+            icon:"chevron-right"
+            icon_size: "30sp"
+            pos_hint:{"center_x":.95, "center_y":.5}
+            on_release:
+                app.choice(root.name)
 
-    MDLabel:
-        text: root.sub
-        font_size: '15sp'
-        theme_text_color: "Custom"
-        #text_color: 0.6, 0.6, 0.6, 1  # Slightly darker gray text
-        halign:"center"
-        pos_hint:{"center_x":.17}
+<VisCard@MDBoxLayout>:
+    md_bg_color: [.17, .17, .17, .3]
+    radius: [15]
+    name: ""
+    orientation: 'horizontal'
+    FloatLayout:
+        MDLabel:
+            halign:"left"
+            text:root.name
+            font_size: '16sp'
+            pos_hint:{"center_x":.55, "center_y":.5}
+        MDIconButton:
+            halign:"center"
+            icon:"chevron-right"
+            icon_size: "30sp"
+            pos_hint:{"center_x":.95, "center_y":.5}
+            on_release:
+                app.choice(root.name)
+
