@@ -1,11 +1,11 @@
-import re
+import json
 from datetime import datetime
 import os
 from kivy import utils
 from kivy import platform
 from kivymd.uix.textfield import MDTextField
-from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter
+# from reportlab.pdfgen import canvas
+# from reportlab.lib.pagesizes import letter
 from kivy.base import EventLoop
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -13,6 +13,8 @@ from kivy.properties import NumericProperty, StringProperty
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.pickers import MDDatePicker
+
+from database import Uzuri as Uz
 
 import kivymd_extensions.akivymd
 
@@ -26,18 +28,10 @@ Clock.max_iteration = 250
 if utils.platform != 'android':
     Window.size = [420, 740]
     #pass
-
-if platform == "android":
+else:
     from jnius import autoclass
-    from android.permissions import request_permissions, Permission
-
-
 
 class MainApp(MDApp):
-    def build(self):
-        if platform == "android":
-            request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
-
     # APP
     screens = ['home']
     screens_size = NumericProperty(len(screens) - 1)
@@ -52,7 +46,7 @@ class MainApp(MDApp):
         self.keyboard_hooker()
         # self.theme_cls.theme_style = "Dark"
         # self.theme_cls.primary_palette = "Gray"
-        self.display()
+        #self.display()
         self.month()
 
     """ KEYBOARD INTEGRATION """
@@ -108,9 +102,12 @@ class MainApp(MDApp):
         chart3.update()
 
     def display(self):
-        self.root.ids.pvs.data = {}
         self.root.ids.prt.data = {}
         self.root.ids.vis.data = {}
+        self.root.ids.pvs.data = {}
+        data = Uz.parent(Uz())
+        data2 = Uz.vistor(Uz())
+
 
         self.root.ids.pvs.data.append(
             {
@@ -124,133 +121,47 @@ class MainApp(MDApp):
                 "name": "Visitors / Guider / School teacher",
             }
         )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.prt.data.append(
-            {
-                "viewclass": "StuCard",
-                "name": "Student name:",
-            }
-        )
-        self.root.ids.vis.data.append(
-            {
-                "viewclass": "VisCard",
-                "name": "School name:",
-            }
-        )
-        self.root.ids.vis.data.append(
-            {
-                "viewclass": "VisCard",
-                "name": "School name:",
-            }
-        )
-        self.root.ids.vis.data.append(
-            {
-                "viewclass": "VisCard",
-                "name": "Visitor name:",
-            }
-        )
-        self.root.ids.vis.data.append(
-            {
-                "viewclass": "VisCard",
-                "name": "Visitor name:",
-            }
-        )
 
+        if data:
+            for i, y in data.items():
+                for child in y["children"]:
+                    self.root.ids.prt.data.append(
+                        {
+                            "viewclass": "StuCard",
+                            "name": child["name"],
+                            "pname": y["name"],
+                            "pnumber": y["phone"],
+                            "cage": child["age"],
+                        }
+                    )
+
+        else:
+            self.root.ids.prt.data.append(
+                {
+                    "viewclass": "StuCardx",
+                    "name": "No data available yet!",
+                }
+            )
+
+        if data2:
+            for i, y  in data2.items():
+                self.root.ids.vis.data.append(
+                    {
+                        "viewclass": "VisCard",
+                        "name": y["company_name"],
+                        "gname": y["guider_name"],
+                        "total": y["number_of_visitors"],
+                        "phone": y["phone_number"],
+                    }
+                )
+
+        else:
+            self.root.ids.vis.data.append(
+                {
+                    "viewclass": "StuCardx",
+                    "name": "No data available yet!",
+                }
+            )
 
     def month(self):
         current_time = datetime.now()
@@ -267,8 +178,8 @@ class MainApp(MDApp):
         date_dialog.open()
 
     def on_save(self, instance, value, date_range):
-        # Update the label with the selected date
         self.root.ids.date_label.text = f"Selected Date: {value}"
+        self.get_date(value)
 
     def on_cancel(self, instance, value):
         # Handle the cancel event (optional)
@@ -276,18 +187,12 @@ class MainApp(MDApp):
         self.root.ids.date_label.text_color =  (1, 0, 0, .5)
 
     def choice(self, name):
-        print("here")
+        print("choice")
         if name == "Parents":
             # screen_manager.current = "parent"
             screen_manager = self.root.ids.screen_manager
             screen_manager.current = "student"
-        elif name == "Student name:":
-            # screen_manager.current = "parent"
-            screen_manager = self.root.ids.screen_manager
-            screen_manager.current = "parinfo"
-        elif name == "School name:" or name ==  "Visitor name:":
-            screen_manager = self.root.ids.screen_manager
-            screen_manager.current = "visinfo"
+
         else:
             screen_manager = self.root.ids.screen_manager
             screen_manager.current = "visitor"
@@ -296,22 +201,45 @@ class MainApp(MDApp):
         search_text = self.root.ids.search_field.text
         print(f"Searching for: {search_text}")
 
-    def generate_pdf(self):
-        now = datetime.now()
-        timestamp = now.strftime("%Y%m%d_%H%M%S")
-        filename = f"report_{timestamp}.pdf"
-        filepath = os.path.join(self.user_data_dir, filename)  # saves file in app data directory
-        try:
-            c = canvas.Canvas(filepath, pagesize=letter)
-            # Add content to the PDF (replace with your actual data)
-            c.drawString(72, 750, "This is a simple report.")  # Example content
-            c.save()
-            self.root.ids.filename_label.text = filename
-            print(f"Report saved to: {filepath}")
-            return filepath
-        except Exception as e:
-            print(f"Error generating report: {e}")
-            return None
+    def student_choice(self, name, pname, pnumber, cage):
+
+        self.root.ids.parent_name.text = pname
+        self.root.ids.contact.text = pnumber
+        self.root.ids.child.text = name
+        self.root.ids.age.text = cage + "  Years old"
+
+
+        screen_manager = self.root.ids.screen_manager
+        screen_manager.current = "parinfo"
+
+    def visitor_choice(self, name, gname, total , phone):
+        self.root.ids.sname.text = name
+        self.root.ids.gui.text = gname
+        self.root.ids.no.text = phone
+        self.root.ids.total.text = total
+
+        screen_manager = self.root.ids.screen_manager
+        screen_manager.current = "visinfo"
+
+    def get_date(self, date):
+        Uz.
+
+    # def generate_pdf(self):
+    #     now = datetime.now()
+    #     timestamp = now.strftime("%Y%m%d_%H%M%S")
+    #     filename = f"report_{timestamp}.pdf"
+    #     filepath = os.path.join(self.user_data_dir, filename)  # saves file in app data directory
+    #     try:
+    #         c = canvas.Canvas(filepath, pagesize=letter)
+    #         # Add content to the PDF (replace with your actual data)
+    #         c.drawString(72, 750, "This is a simple report.")  # Example content
+    #         c.save()
+    #         self.root.ids.filename_label.text = filename
+    #         print(f"Report saved to: {filepath}")
+    #         return filepath
+    #     except Exception as e:
+    #         print(f"Error generating report: {e}")
+    #         return None
 
     def share_whatsapp(self):
         filepath = self.generate_pdf()
@@ -338,6 +266,29 @@ class MainApp(MDApp):
             print("Sharing is only available on Android devices")
         else:
             print("No file was created")
+
+    def permition(self):
+
+        if platform == "android":
+            from android.permissions import request_permissions, Permission
+        if platform == "android":
+            request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
+
+
+    def register_caller(self, ):
+        with open("parent.json", "w") as file:
+            data = ["Uz.vistor(Uz())"]
+            data_dump = json.dumps(data, indent=2)
+            file.write(data_dump)
+            file.close()
+
+# add aa def in database forparent.json to have the full parent data then when searching easy
+
+
+    def load(self, data_file_name):
+        with open(data_file_name, "r") as file:
+            initial_data = json.load(file)
+        return initial_data
 
 
 MainApp().run()

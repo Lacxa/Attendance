@@ -389,7 +389,8 @@ FloatLayout:
                         text: "Parent Name:"
                         font_style: "H6"
                     MDLabel:
-                        text: "Emmanuel Silayo"
+                        id: parent_name
+
                 MDSeparator:
 
                 BoxLayout: # Contact Section
@@ -398,7 +399,7 @@ FloatLayout:
                         text: "Contact:"
                         font_style: "H6"
                     MDLabel:
-                        text: "+255 753 131 868"
+                        id: contact
                 MDSeparator:
 
                 BoxLayout: # Child's Name Section
@@ -407,7 +408,7 @@ FloatLayout:
                         text: "Child's Name:"
                         font_style: "H6"
                     MDLabel:
-                        text: "Serene Emmanuel\nIrene Emmanuel"
+                        id: child
                 MDSeparator:
 
                 BoxLayout: # Child's Age Section
@@ -416,7 +417,7 @@ FloatLayout:
                         text: "Child's Age:"
                         font_style: "H6"
                     MDLabel:
-                        text: "9 Years Old\n5 Years Old"
+                        id: age
 
                 Widget: # Spacer (optional)
                     size_hint_y: 1
@@ -444,7 +445,7 @@ FloatLayout:
                         text: "School / Visitor Name:"
                         font_style: "H6"
                     MDLabel:
-                        text: "Mama Hope"
+                        id:sname
 
                 MDSeparator:
 
@@ -454,7 +455,7 @@ FloatLayout:
                         text: "Head of Visitor / Teacher Name:"
                         font_style: "H6"
                     MDLabel:
-                        text: "Mzava mwaikole"
+                        id: gui
 
                 MDSeparator:
 
@@ -464,7 +465,7 @@ FloatLayout:
                         text: "Contact:"
                         font_style: "H6"
                     MDLabel:
-                        text: "+255 753 131 868"
+                        id:no
 
                 MDSeparator:
 
@@ -474,7 +475,7 @@ FloatLayout:
                         text: "Numbers of Visitors / Students:"
                         font_style: "H6"
                     MDLabel:
-                        text: "65"
+                        id:total
 
                 MDSeparator:
 
@@ -587,7 +588,19 @@ FloatLayout:
             icon_size: "30sp"
             pos_hint:{"center_x":.95, "center_y":.5}
             on_release:
-                app.choice(root.name)
+                app.student_choice(root.name, root.pname, root.pnumber, root.cage)
+
+<StuCardx@MDBoxLayout>:
+    md_bg_color: [.17, .17, .17, .3]
+    radius: [15]
+    name: ""
+    orientation: 'horizontal'
+    FloatLayout:
+        MDLabel:
+            halign:"left"
+            text:root.name
+            font_size: '16sp'
+            pos_hint:{"center_x":.55, "center_y":.5}
 
 <VisCard@MDBoxLayout>:
     md_bg_color: [.17, .17, .17, .3]
@@ -606,5 +619,5 @@ FloatLayout:
             icon_size: "30sp"
             pos_hint:{"center_x":.95, "center_y":.5}
             on_release:
-                app.choice(root.name)
+                app.visitor_choice(root.name, root.gname, root.total, root.phone)
 

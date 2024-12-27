@@ -1,7 +1,4 @@
-
 from datetime import datetime
-
-
 
 class Uzuri:
     def parent(self, ):
@@ -11,16 +8,15 @@ class Uzuri:
         if not firebase_admin._apps:
             cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
-            ref = db.reference('parents')
+            ref = db.reference('parents').child(self.year()).child(self.month()).child(self.date())
             data = ref.get()
-            print("here 1")
             if data:
-                print(data)
+                print("data")
 
             else:
-                print("hola!")
+                print("hola! no data available")
 
-        return True
+        return data
 
     def vistor(self, ):
         import firebase_admin
@@ -32,18 +28,48 @@ class Uzuri:
             ref = db.reference('visitor_guider_or_teacher').child(self.year()).child(self.month()).child(self.date())
             data = ref.get()
             if data:
-                print(data)
+                print("data2")
 
             else:
-                print("hola!")
+                print("hola! no data available")
 
-        return True
+        return data
+
+
+    def parent_date(self, year, month, date ):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
+            ref = db.reference('parents').child(year).child(month).child(date)
+            data = ref.get()
+            if data:
+                return data
+            else:
+                print("No data available")
+
+
+    def visitor_date(self, year, month, date ):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
+            ref = db.reference('visitor_guider_or_teacher').child(year).child(month).child(date)
+            data = ref.get()
+
+            if data:
+                return data
+            else:
+                print("No data available")
 
     def year(self):
         current_time = str(datetime.now())
         date, time = current_time.strip().split()
         y, m, d = date.strip().split("-")
-        print(y)
 
         return y
 
@@ -53,7 +79,6 @@ class Uzuri:
         # Extract the full month name starting with a capital letter
         month_name = current_time.strftime("%B")
 
-        print(month_name)
         return month_name
 
     def date(self):
@@ -63,7 +88,7 @@ class Uzuri:
         y, m, d = date.strip().split("-")
         # Remove leading zero by converting to an integer
         day_without_leading_zero = str(int(d))
-        print(day_without_leading_zero)
+
         return day_without_leading_zero
 
 
