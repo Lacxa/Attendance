@@ -3,9 +3,8 @@ from datetime import datetime
 import os
 from kivy import utils
 from kivy import platform
-from kivymd.uix.textfield import MDTextField
-# from reportlab.pdfgen import canvas
-# from reportlab.lib.pagesizes import letter
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill
 from kivy.base import EventLoop
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -19,7 +18,6 @@ from database import Uzuri as Uz
 import kivymd_extensions.akivymd
 
 
-
 Window.keyboard_anim_args = {"d": .2, "t": "linear"}
 Window.softinput_mode = "below_target"
 Clock.max_iteration = 250
@@ -27,9 +25,7 @@ Clock.max_iteration = 250
 
 if utils.platform != 'android':
     Window.size = [420, 740]
-    #pass
-else:
-    from jnius import autoclass
+
 
 class MainApp(MDApp):
     # APP
@@ -43,11 +39,15 @@ class MainApp(MDApp):
     nodata = StringProperty("asset/slide_three_img.png")
 
     def on_start(self):
+        if utils.platform == 'android':
+            self.request_android_permissions()
+
         self.keyboard_hooker()
         # self.theme_cls.theme_style = "Dark"
         # self.theme_cls.primary_palette = "Gray"
         #self.display()
         self.month()
+
 
     """ KEYBOARD INTEGRATION """
 
@@ -222,58 +222,119 @@ class MainApp(MDApp):
         screen_manager.current = "visinfo"
 
     def get_date(self, date):
-        Uz.
+        pass
 
-    # def generate_pdf(self):
-    #     now = datetime.now()
-    #     timestamp = now.strftime("%Y%m%d_%H%M%S")
-    #     filename = f"report_{timestamp}.pdf"
-    #     filepath = os.path.join(self.user_data_dir, filename)  # saves file in app data directory
-    #     try:
-    #         c = canvas.Canvas(filepath, pagesize=letter)
-    #         # Add content to the PDF (replace with your actual data)
-    #         c.drawString(72, 750, "This is a simple report.")  # Example content
-    #         c.save()
-    #         self.root.ids.filename_label.text = filename
-    #         print(f"Report saved to: {filepath}")
-    #         return filepath
-    #     except Exception as e:
-    #         print(f"Error generating report: {e}")
-    #         return None
+    def generate_excel(self):
+        try:
+            # Data for the report
+            data = {
+                "2024-12-01": {"total_schools": 3, "total_students": 80, "total_companies": 2, "total_visitors": 25},
+                "2024-12-02": {"total_schools": 4, "total_students": 95, "total_companies": 1, "total_visitors": 10},
+                "2024-12-03": {"total_schools": 5, "total_students": 120, "total_companies": 3, "total_visitors": 40},
+            }
 
+            # Totals
+            totals = {
+                "total_schools": sum(item["total_schools"] for item in data.values()),
+                "total_students": sum(item["total_students"] for item in data.values()),
+                "total_companies": sum(item["total_companies"] for item in data.values()),
+                "total_visitors": sum(item["total_visitors"] for item in data.values()),
+            }
+
+            # Create an Excel workbook and sheet
+            wb = Workbook()
+            ws = wb.active
+            ws.title = "Monthly Report"
+
+            # Header Row
+            headers = ["Date", "Total Schools", "Total Students", "Total Companies", "Total Visitors"]
+            ws.append(headers)
+
+            # Add Daily Data
+            for date, info in data.items():
+                ws.append([
+                    date,
+                    info["total_schools"],
+                    info["total_students"],
+                    info["total_companies"],
+                    info["total_visitors"],
+                ])
+
+            # Add Totals Row
+            ws.append([
+                "Totals",
+                totals["total_schools"],
+                totals["total_students"],
+                totals["total_companies"],
+                totals["total_visitors"]
+            ])
+
+            # Styling the Header
+            header_font = Font(bold=True, color="FFFFFF")
+            header_fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")
+            for col_num, col in enumerate(headers, start=1):
+                cell = ws.cell(row=1, column=col_num)
+                cell.font = header_font
+                cell.fill = header_fill
+                cell.alignment = Alignment(horizontal="center")
+
+            # Enable and Configure Protection
+            ws.protection.sheet = True
+            ws.protection.set_password("securepassword")  # Replace with your desired password
+            ws.protection.enable()
+
+            # Save the file to external storage
+            directory = "/storage/emulated/0/Download"
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            filepath = os.path.join(directory, "non_editable_school_report.xlsx")
+            wb.save(filepath)
+
+            # Show a success message
+            toast(f"Non-editable Excel file created at: {filepath}")
+            return filepath
+        except Exception as e:
+            toast(f"Error creating Excel file: {e}")
+            return None
     def share_whatsapp(self):
-        filepath = self.generate_pdf()
+        filepath = self.generate_excel()  # Replace with your method to generate the Excel file
         if filepath and platform == "android":
             try:
+                from jnius import autoclass
+
                 PythonActivity = autoclass("org.kivy.android.PythonActivity")
                 Intent = autoclass("android.content.Intent")
                 Uri = autoclass("android.net.Uri")
                 File = autoclass("java.io.File")
 
                 intent = Intent(Intent.ACTION_SEND)
-                intent.setType("application/pdf")
+                intent.setType(
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")  # MIME type for Excel files
 
                 file = File(filepath)
                 uri = Uri.fromFile(file)
                 intent.putExtra(Intent.EXTRA_STREAM, uri)
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                chooser = Intent.createChooser(intent, "Share PDF")
+                chooser = Intent.createChooser(intent, "Share Excel File")
                 PythonActivity.mActivity.startActivity(chooser)
             except Exception as e:
                 print(f"Error sharing: {e}")
         elif filepath:
-            print("Sharing is only available on Android devices")
+            toast("Sharing is only available on Android devices")
         else:
-            print("No file was created")
+            toast("No file was created")
 
-    def permition(self):
+    def request_android_permissions(self):
+        from android.permissions import request_permissions, Permission
 
-        if platform == "android":
-            from android.permissions import request_permissions, Permission
-        if platform == "android":
-            request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE])
+        def callback(permissions, results):
+            if all([res for res in results]):
+                toast("callback. All permissions granted.")
+            else:
+                toast("callback. Some permissions refused.")
 
+        request_permissions([Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE], callback)
 
     def register_caller(self, ):
         with open("parent.json", "w") as file:
@@ -281,8 +342,6 @@ class MainApp(MDApp):
             data_dump = json.dumps(data, indent=2)
             file.write(data_dump)
             file.close()
-
-# add aa def in database forparent.json to have the full parent data then when searching easy
 
 
     def load(self, data_file_name):

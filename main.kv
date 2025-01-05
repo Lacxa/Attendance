@@ -181,6 +181,13 @@ FloatLayout:
                     halign: "center"
                     pos_hint: {"center_x": .5, "center_y": .82}
 
+                MDRoundFlatButton:
+                    text: "permission"
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    on_release:
+                        app.request_android_permissions()
+
+
                 #InfoCard:
                 RecycleView:
                     id: pvs
@@ -196,7 +203,6 @@ FloatLayout:
                         size_hint_y: None
                         height: self.minimum_height
                         orientation: 'vertical'
-
 
         MDScreen:
             name: "student"
