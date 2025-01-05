@@ -299,6 +299,7 @@ FloatLayout:
                             icon_size: "30sp"
                             on_release:
                                 screen_manager.current = "share"
+                                app.report = "Weekly Report"
 
                     OneLineRightIconListItem:
                         text: "Monthly Report"
@@ -306,7 +307,9 @@ FloatLayout:
                         IconRightWidget:
                             icon: "chevron-right"
                             icon_size: "30sp"
-                            on_release: print("Click!")
+                            on_release:
+                                screen_manager.current = "share"
+                                app.report = "Monthly Report"
 
                     OneLineRightIconListItem:
                         text: "Year Report"
@@ -315,7 +318,9 @@ FloatLayout:
                         IconRightWidget:
                             icon: "chevron-right"
                             icon_size: "30sp"
-                            on_release: print("Click!")
+                            on_release:
+                                screen_manager.current = "share"
+                                app.report = "Year Report"
 
                     MDRoundFlatButton:
                         text: "Open  Picker"
@@ -484,10 +489,15 @@ FloatLayout:
             FloatLayout:
                 orientation:"vertical"
                 MDLabel:
-                    text:"Share report via whatsapp"
+                    text:"Generate " + app.report
                     font_style:"H6"
                     halign:"center"
                     pos_hint: {"center_x": .5, "center_y": .95}
+
+                MDRoundFlatButton:
+                    text: "Open Date Picker"
+                    pos_hint: {"center_x": .5, "center_y": .86}
+                    on_release: app.report_date_picker()
 
                 MDLabel:
                     id: filename_label
@@ -495,7 +505,7 @@ FloatLayout:
                     pos_hint: {"center_x": .5, "center_y": .7}
 
                 MDIconButton:
-                    icon: "whatsapp"
+                    icon: "content-save"
                     icon_size: "50sp"
                     pos_hint: {"center_x": .5, "center_y": .5}
                     on_release: app.share_whatsapp()

@@ -34,6 +34,7 @@ class MainApp(MDApp):
     current = StringProperty(screens[len(screens) - 1])
     month_name = StringProperty("")
     selected_date = StringProperty("")
+    report = StringProperty("")
 
     internet = StringProperty("asset/slide_three_img.png")
     nodata = StringProperty("asset/slide_three_img.png")
@@ -173,7 +174,7 @@ class MainApp(MDApp):
 
     def show_date_picker(self):
         self.theme_cls.primary_palette = "Blue"
-        date_dialog = MDDatePicker()
+        date_dialog = MDDatePicker(min_year=2025, max_year=2031, primary_color="blue")
         date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
         date_dialog.open()
 
@@ -185,6 +186,19 @@ class MainApp(MDApp):
         # Handle the cancel event (optional)
         self.root.ids.date_label.text = "Selection Canceled"
         self.root.ids.date_label.text_color =  (1, 0, 0, .5)
+
+    def report_date_picker(self):
+        self.theme_cls.primary_palette = "Orange"
+        date_dialog = MDDatePicker(min_year=2025, max_year=2031, mode="range", primary_color="orange")
+        date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cance)
+        date_dialog.open()
+
+    def on_savu(self, instance, value, date_range):
+        self.get_report(value)
+
+    def on_cance(self, instance, value):
+        # Handle the cancel event (optional)
+        pass
 
     def choice(self, name):
         print("choice")
