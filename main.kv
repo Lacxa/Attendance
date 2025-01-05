@@ -54,115 +54,96 @@ FloatLayout:
                     height: "2dp"
                     pos_hint:{"center_x":.5, "center_y":.5}
 
-                BoxLayout:
-                    orientation: "vertical"
-                    padding: 30
-                    spacing: 20
-                    pos_hint:{"center_x":.5, "center_y":.6}
+
+                MDBoxLayout:
+                    size_hint: None, None
+                    size: "40dp", "40dp"
+                    md_bg_color: app.theme_cls.primary_color[0:3] + [0.2]
+                    radius: [10, 10, 10, 10]
+                    pos_hint: {"center_x":.1, "center_y":.4}
+                    padding: 5
+                    MDIcon:
+                        icon: "school"
+                        size_hint: None, None
+                        size: "24dp", "24dp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+
+                MDLabel:
+                    text: "Schools"
+                    halign: "left"
+                    pos_hint: {"center_x":.7, "center_y":.4}
+                MDLabel:
+                    text: "45"
+                    font_style: "Subtitle1"
+                    halign: "center"
+                    pos_hint: {"center_x":.7, "center_y":.4}
 
 
-                    # Schools section
-                    FloatLayout:
-                        orientation: "vertical"
-                        spacing: 10
-                        size_hint_y: None
-                        height: "60dp"
-                        MDBoxLayout:
-                            size_hint: None, None
-                            size: "40dp", "40dp"
-                            md_bg_color: app.theme_cls.primary_color[0:3] + [0.2]
-                            radius: [10, 10, 10, 10]
-                            pos_hint: {"center_x":.05, "center_y":.5}
-                            padding: 5
-                            MDIcon:
-                                icon: "school"
-                                size_hint: None, None
-                                size: "24dp", "24dp"
-                                halign: "center"
-                                theme_text_color: "Custom"
-                                text_color: 0, 0, 0, 1
 
-                        MDLabel:
-                            text: "Schools"
-                            halign: "left"
-                            pos_hint: {"center_x":.65, "center_y":.5}
-                        MDLabel:
-                            text: "45"
-                            font_style: "Subtitle1"
-                            halign: "center"
-                            pos_hint: {"center_x":.7, "center_y":.5}
+                # Students section
 
 
-                    # Students section
-                    FloatLayout:
-                        orientation: "horizontal"
-                        spacing: 10
-                        size_hint_y: None
-                        height: "60dp"
+                MDBoxLayout:
+                    size_hint: None, None
+                    size: "40dp", "40dp"
+                    md_bg_color: app.theme_cls.primary_color[0:3] + [0.2]
+                    radius: [10, 10, 10, 10]
+                    pos_hint: {"center_x":.1, "center_y":.3}
+                    padding: 5
 
-                        MDBoxLayout:
-                            size_hint: None, None
-                            size: "40dp", "40dp"
-                            md_bg_color: app.theme_cls.primary_color[0:3] + [0.2]
-                            radius: [10, 10, 10, 10]
-                            pos_hint: {"center_x":.05, "center_y":.4}
-                            padding: 5
+                    MDIcon:
+                        icon: "account-group"
+                        size_hint: None, None
+                        size: "24dp", "24dp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
 
-                            MDIcon:
-                                icon: "account-group"
-                                size_hint: None, None
-                                size: "24dp", "24dp"
-                                halign: "center"
-                                theme_text_color: "Custom"
-                                text_color: 0, 0, 0, 1
+                MDLabel:
+                    text: "Students"
+                    halign: "left"
+                    pos_hint: {"center_x":.7, "center_y":.3}
 
-                        MDLabel:
-                            text: "Students"
-                            halign: "left"
-                            pos_hint: {"center_x":.65, "center_y":.4}
-
-                        MDLabel:
-                            text: "50"
-                            font_style: "Subtitle1"
-                            halign: "center"
-                            pos_hint: {"center_x":.7, "center_y":.4}
-
-                    FloatLayout:
-                        orientation: "horizontal"
-                        spacing: 10
-                        size_hint_y: None
-                        height: "60dp"
-
-                        MDBoxLayout:
-                            size_hint: None, None
-                            size: "40dp", "40dp"
-                            md_bg_color: app.theme_cls.primary_color[0:3] + [0.2]
-                            radius: [10, 10, 10, 10]
-                            pos_hint: {"center_x":.05, "center_y":.4}
-                            padding: 5
-
-                            MDIcon:
-                                icon: "account"
-                                size_hint: None, None
-                                size: "24dp", "24dp"
-                                halign: "center"
-                                theme_text_color: "Custom"
-                                text_color: 0, 0, 0, 1
-
-                        MDLabel:
-                            text: "Visitors"
-                            halign: "left"
-                            pos_hint: {"center_x":.65, "center_y":.4}
-
-                        MDLabel:
-                            text: "50"
-                            font_style: "Subtitle1"
-                            halign: "center"
-                            pos_hint: {"center_x":.7, "center_y":.4}
+                MDLabel:
+                    text: "50"
+                    font_style: "Subtitle1"
+                    halign: "center"
+                    pos_hint: {"center_x":.7, "center_y":.3}
 
 
-                    MDSeparator:
-                        height: "2dp"
+                MDBoxLayout:
+                    size_hint: None, None
+                    size: "40dp", "40dp"
+                    md_bg_color: app.theme_cls.primary_color[0:3] + [0.2]
+                    radius: [10, 10, 10, 10]
+                    pos_hint: {"center_x":.1, "center_y":.2}
+                    padding: 5
+
+                    MDIcon:
+                        icon: "account"
+                        size_hint: None, None
+                        size: "24dp", "24dp"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 0, 0, 0, 1
+
+                MDLabel:
+                    text: "Visitors"
+                    halign: "left"
+                    pos_hint: {"center_x":.7, "center_y":.2}
+
+                MDLabel:
+                    text: "50"
+                    font_style: "Subtitle1"
+                    halign: "center"
+                    pos_hint: {"center_x":.7, "center_y":.2}
+
+
+                MDSeparator:
+                    height: "2dp"
+                    pos_hint:{"center_x":.5, "center_y":.12}
 
 
         # Daily Attendance Screen
@@ -175,18 +156,12 @@ FloatLayout:
                     text: "Open Date Picker"
                     pos_hint: {"center_x": .5, "center_y": .9}
                     on_release: app.show_date_picker()
+
                 MDLabel:
                     id: date_label
                     theme_text_color: "Custom"
                     halign: "center"
                     pos_hint: {"center_x": .5, "center_y": .82}
-
-                MDRoundFlatButton:
-                    text: "permission"
-                    pos_hint: {"center_x": .5, "center_y": .5}
-                    on_release:
-                        app.request_android_permissions()
-
 
                 #InfoCard:
                 RecycleView:
@@ -341,6 +316,12 @@ FloatLayout:
                             icon: "chevron-right"
                             icon_size: "30sp"
                             on_release: print("Click!")
+
+                    MDRoundFlatButton:
+                        text: "Open  Picker"
+                        pos_hint: {"center_x": .5, "center_y": .3}
+                        on_release: app.request_android_permissions()
+
 
 
         MDScreen:
