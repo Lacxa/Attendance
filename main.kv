@@ -486,6 +486,8 @@ FloatLayout:
         MDScreen:
             name: "share"
             md_bg_color: [.17, .17, .17, .17]
+            on_enter:
+                root.ids.path.text = ""
             FloatLayout:
                 orientation:"vertical"
                 MDLabel:
@@ -500,15 +502,15 @@ FloatLayout:
                     on_release: app.report_date_picker()
 
                 MDLabel:
-                    id: filename_label
+                    id:path
                     halign:"center"
-                    pos_hint: {"center_x": .5, "center_y": .7}
+                    pos_hint: {"center_x": .5, "center_y": .4}
 
                 MDIconButton:
                     icon: "content-save"
                     icon_size: "50sp"
                     pos_hint: {"center_x": .5, "center_y": .5}
-                    on_release: app.share_whatsapp()
+                    on_release: app.location()
 
 
     AKBottomNavigation2:

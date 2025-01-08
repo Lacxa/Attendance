@@ -1,5 +1,6 @@
 import json
-from datetime import datetime
+from calendar import month
+from datetime import datetime, date
 import os
 from kivy import utils
 from kivy import platform
@@ -35,18 +36,25 @@ class MainApp(MDApp):
     month_name = StringProperty("")
     selected_date = StringProperty("")
     report = StringProperty("")
+    filepath = StringProperty("")
 
     internet = StringProperty("asset/slide_three_img.png")
     nodata = StringProperty("asset/slide_three_img.png")
+
+    #Database
+    parent_data = Uz.parent(Uz())
+    visitor_data = Uz.guest(Uz())
+    school_data = Uz.school(Uz())
+
+
 
     def on_start(self):
         if utils.platform == 'android':
             self.request_android_permissions()
 
         self.keyboard_hooker()
-        # self.theme_cls.theme_style = "Dark"
-        # self.theme_cls.primary_palette = "Gray"
-        #self.display()
+        #self.theme_cls.theme_style = "Dark"
+        self.display()
         self.month()
 
 
@@ -106,9 +114,6 @@ class MainApp(MDApp):
         self.root.ids.prt.data = {}
         self.root.ids.vis.data = {}
         self.root.ids.pvs.data = {}
-        data = Uz.parent(Uz())
-        data2 = Uz.vistor(Uz())
-
 
         self.root.ids.pvs.data.append(
             {
@@ -123,8 +128,8 @@ class MainApp(MDApp):
             }
         )
 
-        if data:
-            for i, y in data.items():
+        if self.parent_data:
+            for i, y in self.parent_data.items():
                 for child in y["children"]:
                     self.root.ids.prt.data.append(
                         {
@@ -144,14 +149,26 @@ class MainApp(MDApp):
                 }
             )
 
-        if data2:
-            for i, y  in data2.items():
+        if self.visitor_data:
+            for i, y  in self.visitor_data.items():
                 self.root.ids.vis.data.append(
                     {
                         "viewclass": "VisCard",
                         "name": y["company_name"],
                         "gname": y["guider_name"],
                         "total": y["number_of_visitors"],
+                        "phone": y["phone_number"],
+                    }
+                )
+
+        if self.school_data:
+            for i, y  in self.school_data.items():
+                self.root.ids.vis.data.append(
+                    {
+                        "viewclass": "VisCard",
+                        "name": y["school_name"],
+                        "gname": y["teacher_name"],
+                        "total": y["number_of_students"],
                         "phone": y["phone_number"],
                     }
                 )
@@ -164,6 +181,7 @@ class MainApp(MDApp):
                 }
             )
 
+
     def month(self):
         current_time = datetime.now()
         month_name = current_time.strftime("%B")
@@ -174,13 +192,14 @@ class MainApp(MDApp):
 
     def show_date_picker(self):
         self.theme_cls.primary_palette = "Blue"
-        date_dialog = MDDatePicker(min_year=2025, max_year=2031, primary_color="blue")
+        date_dialog = MDDatePicker(min_year=2023, max_year=2031, primary_color="blue")
         date_dialog.bind(on_save=self.on_save, on_cancel=self.on_cancel)
         date_dialog.open()
 
     def on_save(self, instance, value, date_range):
         self.root.ids.date_label.text = f"Selected Date: {value}"
-        self.get_date(value)
+        self.selected_date = str(value)
+        self.get_date()
 
     def on_cancel(self, instance, value):
         # Handle the cancel event (optional)
@@ -188,13 +207,14 @@ class MainApp(MDApp):
         self.root.ids.date_label.text_color =  (1, 0, 0, .5)
 
     def report_date_picker(self):
-        self.theme_cls.primary_palette = "Orange"
-        date_dialog = MDDatePicker(min_year=2025, max_year=2031, mode="range", primary_color="orange")
-        date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cance)
-        date_dialog.open()
+        # self.theme_cls.primary_palette = "Orange"
+        # date_dialog = MDDatePicker(min_year=2025, max_year=2031, mode="range", primary_color="orange")
+        # date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cance)
+        # date_dialog.open()
+        self.generate_excel("date")
 
     def on_savu(self, instance, value, date_range):
-        self.get_report(value)
+        self.generate_excel(value)
 
     def on_cance(self, instance, value):
         # Handle the cancel event (optional)
@@ -235,10 +255,44 @@ class MainApp(MDApp):
         screen_manager = self.root.ids.screen_manager
         screen_manager.current = "visinfo"
 
-    def get_date(self, date):
-        pass
+    def get_date(self, ):
+        year, smonth ,  day = self.selected_date.strip().split('-')
 
-    def generate_excel(self):
+        year = str(year)
+        smonth = int(smonth)
+        day = str(int(day))
+
+
+
+        months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ]
+        month_name = str(months[smonth - 1])
+
+
+        data = Uz.selected_parent(Uz(), year, month_name, day)
+        data2 =Uz.selected_guest(Uz(), year, month_name, day)
+        data3 = Uz.selected_school(Uz(), year, month_name, day)
+
+        if data:
+            self.parent_data = data
+        else:
+            self.parent_data = ""
+
+        if data2:
+            self.visitor_data = data2
+        else:
+            self.visitor_data = ""
+
+        if data3:
+            self.school_data = data3
+        else:
+            self.school_data = ""
+
+        self.display()
+
+    def generate_excel(self, date):
         try:
             # Data for the report
             data = {
@@ -301,43 +355,21 @@ class MainApp(MDApp):
             directory = "/storage/emulated/0/Download"
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            filepath = os.path.join(directory, "non_editable_school_report.xlsx")
+            filepath = os.path.join(directory, self.report + ".xlsx")
             wb.save(filepath)
 
             # Show a success message
-            toast(f"Non-editable Excel file created at: {filepath}")
+            toast(f"File created at: {filepath}")
+            self.filepath = filepath
             return filepath
         except Exception as e:
-            toast(f"Error creating Excel file: {e}")
+            toast(f"Error creating Report file: {e}")
             return None
-    def share_whatsapp(self):
-        filepath = self.generate_excel()  # Replace with your method to generate the Excel file
-        if filepath and platform == "android":
-            try:
-                from jnius import autoclass
 
-                PythonActivity = autoclass("org.kivy.android.PythonActivity")
-                Intent = autoclass("android.content.Intent")
-                Uri = autoclass("android.net.Uri")
-                File = autoclass("java.io.File")
 
-                intent = Intent(Intent.ACTION_SEND)
-                intent.setType(
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")  # MIME type for Excel files
+    def location(self):
+        self.root.ids.path.text = self.filepath
 
-                file = File(filepath)
-                uri = Uri.fromFile(file)
-                intent.putExtra(Intent.EXTRA_STREAM, uri)
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-                chooser = Intent.createChooser(intent, "Share Excel File")
-                PythonActivity.mActivity.startActivity(chooser)
-            except Exception as e:
-                print(f"Error sharing: {e}")
-        elif filepath:
-            toast("Sharing is only available on Android devices")
-        else:
-            toast("No file was created")
 
     def request_android_permissions(self):
         from android.permissions import request_permissions, Permission
