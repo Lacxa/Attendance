@@ -207,10 +207,11 @@ class MainApp(MDApp):
         self.root.ids.date_label.text_color =  (1, 0, 0, .5)
 
     def report_date_picker(self):
-        # self.theme_cls.primary_palette = "Orange"
-        # date_dialog = MDDatePicker(min_year=2025, max_year=2031, mode="range", primary_color="orange")
-        # date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cance)
-        # date_dialog.open()
+        self.theme_cls.primary_palette = "Orange"
+        date_dialog = MDDatePicker(min_year=2025, max_year=2031, mode="range", primary_color="orange")
+        date_dialog.bind(on_save=self.on_savu, on_cancel=self.on_cance)
+        date_dialog.open()
+
         self.generate_excel("date")
 
     def on_savu(self, instance, value, date_range):
