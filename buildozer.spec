@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,firebase-admin==6.3.0,fonttools==4.47.2,google-api-core==2.15.0,google-api-python-client==2.113.0,google-auth==2.26.2,google-auth-httplib2==0.2.0,google-cloud-core==2.4.1,google-cloud-firestore==2.14.0,google-cloud-storage==2.14.0,google-crc32c==1.5.0,google-resumable-media==2.7.0,googleapis-common-protos==1.62.0,,httplib2==0.22.0,idna==3.10,pillow==10.2.0,Jinja2==3.1.4,Kivy==2.3.0,Kivy-Garden==0.1.5, kivymd==1.1.1,jnius,https://github.com/kivymd-extensions/akivymd/archive/main.zip,openpyxl,et_xmlfile,MarkupSafe==2.1.3,,msgpack==1.0.7,packaging==23.2,pexpect==4.9.0,platformdirs==4.1.0,proto-plus==1.23.0,protobuf==4.25.2,ptyprocess==0.7.0,pyasn1==0.5.1,pyasn1-modules==0.3.0,pycparser==2.21,Pygments==2.17.2,PyJWT==2.8.0,pyparsing==3.1.1,pyproject_hooks==1.0.0,python-dateutil==2.8.2,requests==2.31.0,rsa==4.9,setuptools==59.2.0,sh==1.14.3,six==1.16.0,toml==0.10.2,uritemplate==4.1.1,urllib3==2.1.0,cachetools,
+requirements = python3,sqlite3,firebase-admin==6.3.0,fonttools==4.47.2,google-api-core==2.15.0,google-api-python-client==2.113.0,google-auth==2.26.2,google-auth-httplib2==0.2.0,google-cloud-core==2.4.1,google-cloud-firestore==2.14.0,google-cloud-storage==2.14.0,google-crc32c==1.5.0,google-resumable-media==2.7.0,googleapis-common-protos==1.62.0,,httplib2==0.22.0,idna==3.10,pillow==10.2.0,Jinja2==3.1.4,Kivy==2.3.0,Kivy-Garden==0.1.5, kivymd==1.2.0,jnius,https://github.com/kivymd-extensions/akivymd/archive/main.zip,openpyxl,et_xmlfile,MarkupSafe==2.1.3,,msgpack==1.0.7,packaging==23.2,pexpect==4.9.0,platformdirs==4.1.0,proto-plus==1.23.0,protobuf==4.25.2,ptyprocess==0.7.0,pyasn1==0.5.1,pyasn1-modules==0.3.0,pycparser==2.21,Pygments==2.17.2,PyJWT==2.8.0,pyparsing==3.1.1,pyproject_hooks==1.0.0,python-dateutil==2.8.2,requests==2.31.0,rsa==4.9,setuptools==59.2.0,sh==1.14.3,six==1.16.0,toml==0.10.2,uritemplate==4.1.1,urllib3==2.1.0,cachetools,
 
 
 # (str) Custom source folders for requirements
@@ -45,10 +45,10 @@ requirements = python3,firebase-admin==6.3.0,fonttools==4.47.2,google-api-core==
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/data/presplash.png
+presplash.filename = asset/icon/markup_1000206680.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/data/icon.png
+icon.filename = asset/icon/icon.png
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse

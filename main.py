@@ -1,18 +1,22 @@
 import json
-from calendar import month
-from datetime import datetime, date
+import time
+from datetime import datetime
 import os
+from threading import Thread
+
 from kivy import utils
 from kivy import platform
+from kivy.uix.floatlayout import FloatLayout
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 from kivy.base import EventLoop
 from kivy.clock import Clock
 from kivy.core.window import Window
-from kivy.properties import NumericProperty, StringProperty
+from kivy.properties import NumericProperty, StringProperty, ObjectProperty
 from kivymd.app import MDApp
 from kivymd.toast import toast
 from kivymd.uix.pickers import MDDatePicker
+from openpyxl.styles.builtins import total
 
 from database import Uzuri as Uz
 
@@ -33,7 +37,6 @@ class MainApp(MDApp):
     screens = ['home']
     screens_size = NumericProperty(len(screens) - 1)
     current = StringProperty(screens[len(screens) - 1])
-    month_name = StringProperty("")
     selected_date = StringProperty("")
     report = StringProperty("")
     filepath = StringProperty("")
@@ -45,7 +48,11 @@ class MainApp(MDApp):
     parent_data = Uz.parent(Uz())
     visitor_data = Uz.guest(Uz())
     school_data = Uz.school(Uz())
+    saved = Uz.fetch_all_parent(Uz())
 
+    selected_parent = []
+    selected_visitor = []
+    selected_school = []
 
 
     def on_start(self):
@@ -54,9 +61,9 @@ class MainApp(MDApp):
 
         self.keyboard_hooker()
         #self.theme_cls.theme_style = "Dark"
+        self.cal()
         self.display()
-        self.month()
-
+        #self.month()
 
     """ KEYBOARD INTEGRATION """
 
@@ -113,6 +120,8 @@ class MainApp(MDApp):
     def display(self):
         self.root.ids.prt.data = {}
         self.root.ids.vis.data = {}
+        self.root.ids.sch.data = {}
+
         self.root.ids.pvs.data = {}
 
         self.root.ids.pvs.data.append(
@@ -124,11 +133,17 @@ class MainApp(MDApp):
         self.root.ids.pvs.data.append(
             {
                 "viewclass": "InfoCard",
-                "name": "Visitors / Guider / School teacher",
+                "name": "Visitors",
             }
         )
-
+        self.root.ids.pvs.data.append(
+            {
+                "viewclass": "InfoCard",
+                "name": "Schools",
+            }
+        )
         if self.parent_data:
+            self.root.ids.prt.data = {}
             for i, y in self.parent_data.items():
                 for child in y["children"]:
                     self.root.ids.prt.data.append(
@@ -150,6 +165,7 @@ class MainApp(MDApp):
             )
 
         if self.visitor_data:
+            self.root.ids.vis.data = {}
             for i, y  in self.visitor_data.items():
                 self.root.ids.vis.data.append(
                     {
@@ -157,18 +173,6 @@ class MainApp(MDApp):
                         "name": y["company_name"],
                         "gname": y["guider_name"],
                         "total": y["number_of_visitors"],
-                        "phone": y["phone_number"],
-                    }
-                )
-
-        if self.school_data:
-            for i, y  in self.school_data.items():
-                self.root.ids.vis.data.append(
-                    {
-                        "viewclass": "VisCard",
-                        "name": y["school_name"],
-                        "gname": y["teacher_name"],
-                        "total": y["number_of_students"],
                         "phone": y["phone_number"],
                     }
                 )
@@ -181,14 +185,78 @@ class MainApp(MDApp):
                 }
             )
 
+        if self.school_data:
+            self.root.ids.sch.data = {}
+            for i, y  in self.school_data.items():
+                self.root.ids.sch.data.append(
+                    {
+                        "viewclass": "SchCard",
+                        "name": y["school_name"],
+                        "gname": y["teacher_name"],
+                        "total": y["number_of_students"],
+                        "phone": y["phone_number"],
+                    }
+                )
+
+        else:
+            self.root.ids.sch.data.append(
+                {
+                    "viewclass": "StuCardx",
+                    "name": "No data available yet!",
+                }
+            )
+
+
+    vis = StringProperty()
+    par = StringProperty()
+    sch = StringProperty()
+
+    def cal(self):
+        self.selected_parent = self.parent_data
+        self.selected_visitor = self.visitor_data
+        self.selected_school = self.school_data
+
+        if self.parent_data:
+            par = sum(len(person_data['children']) for person_data in self.selected_parent.values())
+            print(par)
+            self.par = str(par)
+
+        else:
+            self.par = "0"
+
+        if self.visitor_data:
+            vis = sum(int(entry.get('number_of_students', 0)) for entry in self.selected_visitor.values())
+            print(vis)
+            self.vis = str(vis)
+
+        else:
+            self.vis = "0"
+
+        if self.school_data:
+            sch = sum(int(entry.get('number_of_students', 0)) for entry in self.selected_school.values())
+            print(sch)
+
+            self.sch = str(sch)
+
+        else:
+            self.sch = "0"
+
+        total = int(self.vis) + int(self.sch) + int(self.par)
+
+        self.root.ids.tot.text = str(total)
+        self.root.ids.visitor.text = str(self.vis)
+        self.root.ids.school.text = str(self.sch)
+        self.root.ids.student.text = str(self.par)
+
 
     def month(self):
         current_time = datetime.now()
         month_name = current_time.strftime("%B")
         date_str = current_time.strftime("%Y-%m-%d")
         self.root.ids.date_label.text = date_str
+        self.root.ids.month.text = month_name
 
-        self.month_name = month_name
+
 
     def show_date_picker(self):
         self.theme_cls.primary_palette = "Blue"
@@ -228,9 +296,13 @@ class MainApp(MDApp):
             screen_manager = self.root.ids.screen_manager
             screen_manager.current = "student"
 
-        else:
+        elif name == "Visitors":
             screen_manager = self.root.ids.screen_manager
             screen_manager.current = "visitor"
+
+        elif name == "Schools":
+            screen_manager = self.root.ids.screen_manager
+            screen_manager.current = "school"
 
     def search(self):
         search_text = self.root.ids.search_field.text
@@ -255,6 +327,15 @@ class MainApp(MDApp):
 
         screen_manager = self.root.ids.screen_manager
         screen_manager.current = "visinfo"
+
+    def school_choice(self, name, gname, total , phone):
+        self.root.ids.wname.text = name
+        self.root.ids.wgui.text = gname
+        self.root.ids.wno.text = phone
+        self.root.ids.wtotal.text = total
+
+        screen_manager = self.root.ids.screen_manager
+        screen_manager.current = "schoolinfo"
 
     def get_date(self, ):
         year, smonth ,  day = self.selected_date.strip().split('-')
@@ -292,6 +373,7 @@ class MainApp(MDApp):
             self.school_data = ""
 
         self.display()
+        self.month()
 
     def generate_excel(self, date):
         try:

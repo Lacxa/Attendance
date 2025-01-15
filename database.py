@@ -10,7 +10,7 @@ class Uzuri:
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
-            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
             ref = db.reference('parents').child(self.year()).child(self.month()).child(self.date())
             data = ref.get()
@@ -28,12 +28,13 @@ class Uzuri:
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
-            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
             ref = db.reference('parents').child(year).child(month).child(date)
             data = ref.get()
             if data:
                 print("parent")
+                print(data)
 
             else:
                 print("hola! no data available")
@@ -45,7 +46,7 @@ class Uzuri:
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
-            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
             ref = db.reference('visitor').child("guest visitor").child(self.year()).child(self.month()).child(self.date())
             data = ref.get()
@@ -62,13 +63,14 @@ class Uzuri:
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
-            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
             ref = db.reference('visitor').child("guest visitor").child(year).child(month).child(date)
             data = ref.get()
 
             if data:
                 print("guest")
+                print(data)
             else:
                 print("No guest available")
 
@@ -80,7 +82,7 @@ class Uzuri:
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
-            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
             ref = db.reference('visitor').child("school visit").child(self.year()).child(self.month()).child(self.date())
             data = ref.get()
@@ -98,17 +100,36 @@ class Uzuri:
         firebase_admin._apps.clear()
         from firebase_admin import credentials, initialize_app, db
         if not firebase_admin._apps:
-            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-95d6141355.json")
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
             initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
             ref = db.reference('visitor').child("school visit").child(year).child(month).child(date)
             data = ref.get()
 
             if data:
                 print("school")
+                print(data)
             else:
                 print("No school available")
 
         return data
+
+    def fetch_all_parent(self, ):
+        import firebase_admin
+        firebase_admin._apps.clear()
+        from firebase_admin import credentials, initialize_app, db
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("credentials/attendance-scan-c7af7-firebase-adminsdk-wew0v-781286875a.json")
+            initialize_app(cred, {'databaseURL': 'https://attendance-scan-c7af7-default-rtdb.firebaseio.com/'})
+            ref = db.reference('parents')
+            data = ref.get()
+            if data:
+                print("data")
+
+            else:
+                print("as it ")
+
+        return data
+
 
 
     def year(self):

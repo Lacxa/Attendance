@@ -1,4 +1,5 @@
 #:import sm kivy.uix.screenmanager
+#:import MDFillRoundFlatIconButton kivymd.uix.button.MDFillRoundFlatIconButton
 
 FloatLayout:
     orientation: "vertical"
@@ -34,7 +35,7 @@ FloatLayout:
                             #on_select: root.set_text(args)
 
                 MDLabel:
-                    text: "112"
+                    id: tot
                     font_style: "H4"
                     halign: "left"
                     pos_hint:{"center_x":.55, "center_y":.95}
@@ -44,7 +45,7 @@ FloatLayout:
                     theme_text_color: "Secondary"
                     pos_hint:{"center_x":.44, "center_y":.95}
                 MDLabel:
-                    text: app.month_name
+                    id: month
                     theme_text_color: "Secondary"
                     halign: "center"
                     pos_hint: {"center_x":.5, "center_y":.58}
@@ -75,7 +76,7 @@ FloatLayout:
                     halign: "left"
                     pos_hint: {"center_x":.7, "center_y":.4}
                 MDLabel:
-                    text: "45"
+                    id:school
                     font_style: "Subtitle1"
                     halign: "center"
                     pos_hint: {"center_x":.7, "center_y":.4}
@@ -107,7 +108,7 @@ FloatLayout:
                     pos_hint: {"center_x":.7, "center_y":.3}
 
                 MDLabel:
-                    text: "50"
+                    id:student
                     font_style: "Subtitle1"
                     halign: "center"
                     pos_hint: {"center_x":.7, "center_y":.3}
@@ -135,7 +136,7 @@ FloatLayout:
                     pos_hint: {"center_x":.7, "center_y":.2}
 
                 MDLabel:
-                    text: "50"
+                    id:visitor
                     font_style: "Subtitle1"
                     halign: "center"
                     pos_hint: {"center_x":.7, "center_y":.2}
@@ -162,6 +163,7 @@ FloatLayout:
                     theme_text_color: "Custom"
                     halign: "center"
                     pos_hint: {"center_x": .5, "center_y": .82}
+
 
                 #InfoCard:
                 RecycleView:
@@ -234,7 +236,7 @@ FloatLayout:
                     on_release:
                         screen_manager.current = "daily"
                 MDLabel:
-                    text:"Visitors & school Attendance"
+                    text:"Visitors Attendance"
                     font_style: "H6"
                     halign: "center"
                     pos_hint: {"center_x": .5, "center_y": .95}
@@ -262,6 +264,47 @@ FloatLayout:
                         height: self.minimum_height
                         orientation: 'vertical'
 
+
+        MDScreen:
+            name: "school"
+            md_bg_color: [.17, .17, .17, .17]
+            FloatLayout:
+                orientation: "vertical"
+                MDIconButton:
+                    halign:"center"
+                    icon:"chevron-left"
+                    icon_size: "30sp"
+                    pos_hint:{"center_x":.05, "center_y":.95}
+                    on_release:
+                        screen_manager.current = "daily"
+                MDLabel:
+                    text:"Schools Attendance"
+                    font_style: "H6"
+                    halign: "center"
+                    pos_hint: {"center_x": .5, "center_y": .95}
+
+                MDIconButton:
+                    halign:"center"
+                    icon:"magnify"
+                    font_size:"60sp"
+                    pos_hint:{"center_x":.93, "center_y":.95}
+                    on_release:
+                        screen_manager.current = "search"
+                #InfoCard:
+                RecycleView:
+                    id: sch
+                    key_viewclass: 'viewclass'
+                    key_size: 'height'
+                    pos_hint:{"top":.92}
+                    RecycleBoxLayout:
+                        id:wa
+                        spacing:dp(4)
+                        padding: dp(10)
+                        default_size: None, dp(50)
+                        default_size_hint: 1, None
+                        size_hint_y: None
+                        height: self.minimum_height
+                        orientation: 'vertical'
 
         # Report Screen
         MDScreen:
@@ -321,11 +364,6 @@ FloatLayout:
                             on_release:
                                 screen_manager.current = "share"
                                 app.report = "Year Report"
-
-                    MDRoundFlatButton:
-                        text: "Open  Picker"
-                        pos_hint: {"center_x": .5, "center_y": .3}
-                        on_release: app.request_android_permissions()
 
 
 
@@ -434,7 +472,7 @@ FloatLayout:
                 BoxLayout:  # School/Visitor Name
                     orientation: 'vertical'
                     MDLabel:
-                        text: "School / Visitor Name:"
+                        text: "Visitor Name:"
                         font_style: "H6"
                     MDLabel:
                         id:sname
@@ -444,7 +482,7 @@ FloatLayout:
                 BoxLayout:  # Head Visitor / Teacher Name
                     orientation: 'vertical'
                     MDLabel:
-                        text: "Head of Visitor / Teacher Name:"
+                        text: "Head of Visitors:"
                         font_style: "H6"
                     MDLabel:
                         id: gui
@@ -464,7 +502,7 @@ FloatLayout:
                 BoxLayout:  # Number Visitor / Students
                     orientation: 'vertical'
                     MDLabel:
-                        text: "Numbers of Visitors / Students:"
+                        text: "Numbers of Visitors:"
                         font_style: "H6"
                     MDLabel:
                         id:total
@@ -484,6 +522,75 @@ FloatLayout:
                     size_hint_y: 1
 
         MDScreen:
+            name: "schoolinfo"
+            md_bg_color: [.17, .17, .17, .17]
+            MDIconButton:
+                halign:"center"
+                icon:"chevron-left"
+                icon_size: "30sp"
+                pos_hint:{"center_x":.05, "center_y":.95}
+                on_release:
+                    screen_manager.current = "visitor"
+            BoxLayout:
+                orientation: 'vertical'
+                padding: dp(35)
+                spacing: dp(15)
+
+
+                BoxLayout:  # School/Visitor Name
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "School Name:"
+                        font_style: "H6"
+                    MDLabel:
+                        id:wname
+
+                MDSeparator:
+
+                BoxLayout:  # Head Visitor / Teacher Name
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Teacher Name:"
+                        font_style: "H6"
+                    MDLabel:
+                        id: wgui
+
+                MDSeparator:
+
+                BoxLayout:  # Contact
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Contact:"
+                        font_style: "H6"
+                    MDLabel:
+                        id:wno
+
+                MDSeparator:
+
+                BoxLayout:  # Number Visitor / Students
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Numbers of  Students:"
+                        font_style: "H6"
+                    MDLabel:
+                        id:wtotal
+
+                MDSeparator:
+
+                BoxLayout:  # Date of Visit
+                    orientation: 'vertical'
+                    MDLabel:
+                        text: "Date of Visit:"
+                        font_style: "H6"
+                    MDLabel:
+                        id: visit_date_label # Give it an id to update from Python
+                        text: "2024/12/23"
+
+                Widget:  # Spacer
+                    size_hint_y: 1
+
+
+        MDScreen:
             name: "share"
             md_bg_color: [.17, .17, .17, .17]
             on_enter:
@@ -499,7 +606,14 @@ FloatLayout:
                 MDRoundFlatButton:
                     text: "Open Date Picker"
                     pos_hint: {"center_x": .5, "center_y": .86}
-                    on_release: app.report_date_picker()
+                    #on_release: app.report_date_picker()
+
+                MDRoundFlatButton:
+                    text: "Generate"
+                    pos_hint: {"center_x": .5, "center_y": .6}
+                    on_release:
+                        app.generate_excel("date")
+
 
                 MDLabel:
                     id:path
@@ -620,3 +734,21 @@ FloatLayout:
             on_release:
                 app.visitor_choice(root.name, root.gname, root.total, root.phone)
 
+<SchCard@MDBoxLayout>:
+    md_bg_color: [.17, .17, .17, .3]
+    radius: [15]
+    name: ""
+    orientation: 'horizontal'
+    FloatLayout:
+        MDLabel:
+            halign:"left"
+            text:root.name
+            font_size: '16sp'
+            pos_hint:{"center_x":.55, "center_y":.5}
+        MDIconButton:
+            halign:"center"
+            icon:"chevron-right"
+            icon_size: "30sp"
+            pos_hint:{"center_x":.95, "center_y":.5}
+            on_release:
+                app.school_choice(root.name, root.gname, root.total, root.phone)
