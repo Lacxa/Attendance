@@ -10,7 +10,7 @@ from kivy.uix.floatlayout import FloatLayout
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 from kivy.base import EventLoop
-from kivy.clock import Clock
+from kivy.clock import Clock, mainthread
 from kivy.core.window import Window
 from kivy.properties import NumericProperty, StringProperty, ObjectProperty
 from kivymd.app import MDApp
@@ -54,16 +54,26 @@ class MainApp(MDApp):
     selected_visitor = []
     selected_school = []
 
-
+    @mainthread
     def on_start(self):
         if utils.platform == 'android':
             self.request_android_permissions()
 
         self.keyboard_hooker()
         #self.theme_cls.theme_style = "Dark"
+
         self.cal()
         self.display()
-        #self.month()
+        self.month()
+
+    @mainthread
+    def refresh(self):
+        self.parent_data = Uz.parent(Uz())
+        self.visitor_data = Uz.guest(Uz())
+        self.school_data = Uz.school(Uz())
+
+        self.cal()
+        self.display()
 
     """ KEYBOARD INTEGRATION """
 
@@ -206,10 +216,13 @@ class MainApp(MDApp):
                 }
             )
 
+        self.stop()
+
 
     vis = StringProperty()
     par = StringProperty()
     sch = StringProperty()
+    count = StringProperty()
 
     def cal(self):
         self.selected_parent = self.parent_data
@@ -225,8 +238,7 @@ class MainApp(MDApp):
             self.par = "0"
 
         if self.visitor_data:
-            vis = sum(int(entry.get('number_of_students', 0)) for entry in self.selected_visitor.values())
-            print(vis)
+            vis = sum(int(entry.get('number_of_visitors', 0)) for entry in self.selected_visitor.values())
             self.vis = str(vis)
 
         else:
@@ -234,19 +246,23 @@ class MainApp(MDApp):
 
         if self.school_data:
             sch = sum(int(entry.get('number_of_students', 0)) for entry in self.selected_school.values())
-            print(sch)
-
             self.sch = str(sch)
+
+            count = 0
+            for i in self.selected_school:
+                count += 1
+
+            self.count = str(count)
 
         else:
             self.sch = "0"
 
-        total = int(self.vis) + int(self.sch) + int(self.par)
+        total = int(self.vis) + int(self.par) + int(self.sch)
 
         self.root.ids.tot.text = str(total)
         self.root.ids.visitor.text = str(self.vis)
-        self.root.ids.school.text = str(self.sch)
-        self.root.ids.student.text = str(self.par)
+        self.root.ids.school.text = str(self.count)
+        self.root.ids.student.text = str(int(self.par) + int(self.sch))
 
 
     def month(self):
@@ -255,6 +271,17 @@ class MainApp(MDApp):
         date_str = current_time.strftime("%Y-%m-%d")
         self.root.ids.date_label.text = date_str
         self.root.ids.month.text = month_name
+
+
+    def start(self):
+        try:
+            self.root.ids.spine.active = True  # Access the screen first then the spinner
+        except AttributeError:
+            print("Error: Spinner or Screen not found. Check KV and IDs.")
+        self.root.ids.spine.active = True
+
+    def stop(self):
+        self.root.ids.spine.active = False
 
 
 
@@ -267,7 +294,9 @@ class MainApp(MDApp):
     def on_save(self, instance, value, date_range):
         self.root.ids.date_label.text = f"Selected Date: {value}"
         self.selected_date = str(value)
+        self.start()
         self.get_date()
+
 
     def on_cancel(self, instance, value):
         # Handle the cancel event (optional)
@@ -337,13 +366,13 @@ class MainApp(MDApp):
         screen_manager = self.root.ids.screen_manager
         screen_manager.current = "schoolinfo"
 
+    @mainthread
     def get_date(self, ):
         year, smonth ,  day = self.selected_date.strip().split('-')
 
         year = str(year)
         smonth = int(smonth)
         day = str(int(day))
-
 
 
         months = [
@@ -373,7 +402,6 @@ class MainApp(MDApp):
             self.school_data = ""
 
         self.display()
-        self.month()
 
     def generate_excel(self, date):
         try:
@@ -395,7 +423,7 @@ class MainApp(MDApp):
             # Create an Excel workbook and sheet
             wb = Workbook()
             ws = wb.active
-            ws.title = "Monthly Report"
+            ws.title = self.report
 
             # Header Row
             headers = ["Date", "Total Schools", "Total Students", "Total Companies", "Total Visitors"]
@@ -442,18 +470,18 @@ class MainApp(MDApp):
             wb.save(filepath)
 
             # Show a success message
-            toast(f"File created at: {filepath}")
+            toast("Report Successful")
             self.filepath = filepath
             return filepath
         except Exception as e:
-            toast(f"Error creating Report file: {e}")
+            toast("Error creating Report")
             return None
 
 
     def location(self):
         self.root.ids.path.text = self.filepath
 
-
+    @mainthread
     def request_android_permissions(self):
         from android.permissions import request_permissions, Permission
 

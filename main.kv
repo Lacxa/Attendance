@@ -39,11 +39,12 @@ FloatLayout:
                     font_style: "H4"
                     halign: "left"
                     pos_hint:{"center_x":.55, "center_y":.95}
-                MDLabel:
-                    text: "Around 17 per Month"
-                    halign: "right"
-                    theme_text_color: "Secondary"
-                    pos_hint:{"center_x":.44, "center_y":.95}
+                MDIconButton:
+                    icon: "refresh"
+                    icon_size: "30sp"
+                    pos_hint:{"center_x":.9, "center_y":.95}
+                    on_release: app.refresh()
+
                 MDLabel:
                     id: month
                     theme_text_color: "Secondary"
@@ -156,13 +157,24 @@ FloatLayout:
                 MDRoundFlatButton:
                     text: "Open Date Picker"
                     pos_hint: {"center_x": .5, "center_y": .9}
-                    on_release: app.show_date_picker()
+                    on_release:
+                        app.show_date_picker()
+
+
 
                 MDLabel:
                     id: date_label
                     theme_text_color: "Custom"
                     halign: "center"
                     pos_hint: {"center_x": .5, "center_y": .82}
+
+                MDSpinner:
+                    id:spine
+                    size_hint: None, None
+                    size: dp(40), dp(40)
+                    pos_hint: {'center_x': .5, 'center_y': .5}
+                    active: False
+                    color: .5,.5,.5,1
 
 
                 #InfoCard:
